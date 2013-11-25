@@ -11,6 +11,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.widget.EditText;
 
@@ -129,8 +130,8 @@ public class L {
 	 * @param c context
 	 * @param msg the message 
 	 */
-	public static void alert(Context c, String msg) {
-		alert(c, msg, new OnClickListener() {
+	public static void alert(Context c,  String title_ben, String msg) {
+		alert(c, title_ben, msg, new OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				
@@ -146,13 +147,14 @@ public class L {
 	 * @param msg
 	 * @param callBack
 	 */
-	public static void alert(Context c, String msg, OnClickListener callBack) {
+	public static void alert(Context c,  String title_ben, String msg, OnClickListener callBack) {
 		if (c == null) {
 			return;
 		}
 		
 		AlertDialog.Builder b = new AlertDialog.Builder(c);
 		b.setMessage(msg);
+        b.setTitle(title_ben);
 		b.setCancelable(false);
 		b.setPositiveButton("OK", callBack);
 		b.show();	
@@ -175,8 +177,8 @@ public class L {
 	 * @param msg
 	 * @param okListener
 	 */
-	public static void inputDialog(Context c, String msg, final InputListener okListener) {
-		inputDialog(c, msg, okListener, null);
+	public static void inputDialog(Context c,  String title_ben, String msg, final InputListener okListener) {
+		inputDialog(c, title_ben, msg, okListener);
 	}
 	
 	/**
@@ -186,10 +188,10 @@ public class L {
 	 * @param okListener
 	 * @param defaultValue
 	 */
-	public static void inputDialog(Context c, String msg, final InputListener okListener, String defaultValue) {
+	public static void inputDialog(Context c, String title_ben,  String msg, final InputListener okListener, String defaultValue) {
 		AlertDialog.Builder alert = new AlertDialog.Builder(c);
 
-		alert.setTitle("Input Dialog");
+		alert.setTitle(title_ben);
 		alert.setMessage(msg);
 
 		// Set an EditText view to get user input
@@ -217,6 +219,74 @@ public class L {
 		alert.show();		
 	}
 
+    /********** BENNNY MODIFICATION 1 *****************************/
+
+	/**
+	 * Lazy Input Dialog For Password
+	 * 
+	 * Example Usage: 
+	 * 	L.inputDialog(this, "What is your name", new InputListener() {
+	 * 
+	 * 		public void inputResult(String value) {
+	 * 			String name = value;
+	 * 			L.alert("My name is: " + name);
+	 * 		}
+	 * 
+	 *	});
+	 * 
+	 * @param c
+	 * @param msg
+	 * @param okListener
+	 */
+	public static void inputDialog(Context c,  String title_ben, String msg, Boolean isPassword, final InputListener okListener) {
+		inputDialog(c, title_ben, msg, true, okListener);
+	}
+	
+    /**
+     *
+     * @param c
+     * @param msg
+     * @param okListener
+     * @param defaultValue
+     */
+    public static void inputDialog(Context c, String title_ben, String msg, Boolean isPassword, final InputListener okListener, String defaultValue) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(c);
+
+        alert.setTitle(title_ben);
+        alert.setMessage(msg);
+
+        // Set an EditText view to get user input
+        final EditText input = new EditText(c);
+
+        if (defaultValue != null) {
+            input.setText(defaultValue);
+
+            if(isPassword){
+                input.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            }
+        }
+
+        alert.setView(input);
+
+        alert.setPositiveButton("OK",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(
+                            DialogInterface dialog,
+                            int whichButton) {
+                        String value = input.getText()
+                                .toString();
+                        okListener.inputResult(value);
+                    }
+                });
+
+        alert.setNegativeButton("Cancel", null);
+        alert.show();
+    }
+
+
+    /***************************************************************/
+
 	/**
 	 * Lazy Confirmation Dialog. For the activity implements OnClickListener
 	 * 
@@ -234,13 +304,13 @@ public class L {
 	 * @param c
 	 * @param msg
 	 */
-	public static AlertDialog.Builder confirmDialog(Context c, String msg) {
+	public static AlertDialog.Builder confirmDialog(Context c, String title_ben, String msg) {
 		OnClickListener yes = null;
 
 		if (c instanceof OnClickListener) {
 			yes = (OnClickListener) c;
 		}
-		return confirmDialog(c, msg, yes);
+		return confirmDialog(c, title_ben, msg, yes);
 	}
 
 	/**
@@ -250,9 +320,9 @@ public class L {
 	 * @param msg
 	 * @param yes
 	 */
-	public static AlertDialog.Builder confirmDialog(Context c, String msg, OnClickListener yes) {
+	public static AlertDialog.Builder confirmDialog(Context c, String title_ben,  String msg, OnClickListener yes) {
 		AlertDialog.Builder alert = new AlertDialog.Builder(c);
-		alert.setTitle("Confirmation");
+		alert.setTitle(title_ben);
 		alert.setMessage(msg);
 		alert.setPositiveButton("Yes", yes);
 		alert.setNegativeButton("No", null);
@@ -294,7 +364,99 @@ public class L {
 	public static String getString(Context c, String key) {
 		return c.getSharedPreferences("Preference", 0).getString(key, null);
 	}
-	
+
+/****************************************BEN MODIFICATION 2 ******************************************/
+
+    /**
+     * Store a Boolean
+     * @param c
+     * @param key
+     * @param value
+     */
+    public static void storeBool(Context c, String key, boolean value) {
+        c.getSharedPreferences("Preference", 0).edit().putBoolean(key, value).commit();
+    }
+
+    /**
+     * Retrieve a Boolean
+     * @param c
+     * @param key
+     * @return the value, return 'null' if the key doesn't exist.
+     */
+    public static boolean getBool(Context c, String key) {
+        return c.getSharedPreferences("Preference", 0).getBoolean(key, false);
+    }
+
+
+    /**
+     * Store a int
+     * @param c
+     * @param key
+     * @param value
+     */
+    public static void storeInt(Context c, String key, int value) {
+        c.getSharedPreferences("Preference", 0).edit().putInt(key, value).commit();
+    }
+
+    /**
+     * Retrieve a int
+     *
+     * @param c
+     * @param key
+     * @return the value, return 'null' if the key doesn't exist.
+     */
+    public static int getInt(Context c, String key) {
+        return c.getSharedPreferences("Preference", 0).getInt(key, -1);
+    }
+
+
+
+    /**
+     * Store a float
+     * @param c
+     * @param key
+     * @param value
+     */
+    public static void storeFloat(Context c, String key, float value) {
+        c.getSharedPreferences("Preference", 0).edit().putFloat(key, value).commit();
+    }
+
+    /**
+     * Retrieve a float
+     *
+     * @param c
+     * @param key
+     * @return the value, return 'null' if the key doesn't exist.
+     */
+    public static float getFloat(Context c, String key) {
+        return c.getSharedPreferences("Preference", 0).getFloat(key, -1);
+    }
+
+
+
+    /**
+     * Store a long
+     * @param c
+     * @param key
+     * @param value
+     */
+    public static void storeLong(Context c, String key, long value) {
+        c.getSharedPreferences("Preference", 0).edit().putLong(key, value).commit();
+    }
+
+    /**
+     * Retrieve a long
+     *
+     * @param c
+     * @param key
+     * @return the value, return 'null' if the key doesn't exist.
+     */
+    public static long getLong(Context c, String key) {
+        return c.getSharedPreferences("Preference", 0).getLong(key, -1);
+    }
+
+
+    /*************************************************************************************************/
 	/**
 	 * Get Bundle of a activity
 	 * @param c

@@ -15,6 +15,8 @@ import android.text.InputType;
 import android.util.Log;
 import android.widget.EditText;
 
+import java.util.Set;
+
 /**
  * Louis Lam's Lazy Library for Android. 
  * 
@@ -221,27 +223,6 @@ public class L {
 
     /********** BENNNY MODIFICATION 1 *****************************/
 
-	/**
-	 * Lazy Input Dialog For Password
-	 * 
-	 * Example Usage: 
-	 * 	L.inputDialog(this, "What is your name", new InputListener() {
-	 * 
-	 * 		public void inputResult(String value) {
-	 * 			String name = value;
-	 * 			L.alert("My name is: " + name);
-	 * 		}
-	 * 
-	 *	});
-	 * 
-	 * @param c
-	 * @param msg
-	 * @param okListener
-	 */
-	public static void inputDialog(Context c,  String title_ben, String msg, Boolean isPassword, final InputListener okListener) {
-		inputDialog(c, title_ben, msg, true, okListener);
-	}
-	
     /**
      *
      * @param c
@@ -455,6 +436,28 @@ public class L {
         return c.getSharedPreferences("Preference", 0).getLong(key, -1);
     }
 
+
+
+    /**
+     * Store a String Set
+     * @param c
+     * @param key
+     * @param value
+     */
+    public static void storeStringSet(Context c, String key, Set<String> value) {
+        c.getSharedPreferences("Preference", 0).edit().putStringSet(key, value).commit();
+    }
+
+    /**
+     * Retrieve a String Set
+     *
+     * @param c
+     * @param key
+     * @return the value, return 'null' if the key doesn't exist.
+     */
+    public static Set<String> getStringSet(Context c, String key) {
+        return c.getSharedPreferences("Preference", 0).getStringSet(key, null);
+    }
 
     /*************************************************************************************************/
 	/**
